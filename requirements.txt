@@ -1,0 +1,5 @@
+# -i http://pypi.doubanio.com/simple/   #豆瓣的pypi镜像,此处可以更换为自己的源
+
+Django~=1.11
+
+-e .
