@@ -27,10 +27,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+XADMIN_TITLE="Blog管理后台"
+XADMIN_FOOTER_TITLE="power by LiYi"
 
 # Application definition
-
+SITE_ID=1
 INSTALLED_APPS = [
+    'rest_framework',
+    'ckeditor',
+    'ckeditor_uploader',
+    'dal',
+    'dal_select2',
+    'xadmin',
+    'crispy_forms',
+    'blog',
     'main',
     'config',
     'comment',
@@ -40,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.sitemaps'
 ]
 
 MIDDLEWARE = [
@@ -50,14 +62,33 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blog.middleware.user_id.UserIDMiddleware',
 ]
 
+CKEDITOR_CONFIGS={
+    'default':{
+        'toolbar':'full',
+        'height':260,
+        'width':700,
+        'tabSpaces':4,
+        'extraPlugings':'codesnippet'  # 配置代码插件
+    }
+}
+
 ROOT_URLCONF = 'blog.urls'
+
+THEME='bootstrap'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE':2,
+}
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'themes',THEME,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -95,6 +126,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+MEDIA_URL="/media/"
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+CKEDITOR_UPLOAD_PATH="article_images"
+
+DEFAULT_FILE_STORAGE='blog.storage.WatermarkStorage'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -114,3 +151,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT=''
+
+STATICFILES_DIRS=[
+    os.path.join(BASE_DIR,'themes',THEME,'static'),
+]

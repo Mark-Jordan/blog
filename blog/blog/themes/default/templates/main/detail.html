@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+
+{{ post.title }}
+
+{% endblock %}
+
+
+{% block main %}
+
+<h3> {{ post.title }}</h3>
+<div>
+    作者：{{ post.owner }}
+    分类：{{ post.category.name }}
+</div>
+
+<hr>
+<p>{{ post.content }}</p>
+
+{% endblock %}

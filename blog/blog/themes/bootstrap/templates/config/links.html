@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+友情链接
+{% endblock %}
+
+
+{% block main %}
+<table class="table">
+    <thead>
+    <tr>
+        <td>#</td>
+        <td>标题</td>
+        <td>网址</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for link in link_list %}
+    <tr>
+        <td>{{ forloop.counter}}</td>
+        <td>{{ link.title }}</td>
+        <td><a href="{{ link.href }}">{{ link.href }}</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+{% endblock %}

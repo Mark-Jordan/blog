@@ -1,0 +1,145 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+
+{{ post.title }}
+
+{% endblock %}
+
+
+{% block main %}
+
+<div class="card">
+    <h3 class="text-center"> {{ post.title }}</h3>
+    <div class="text-center">
+        <a class="owner" href="{% url 'author' post.owner.id %}">作者：{{ post.owner }}</a>
+        <span class="category">分类：{{ post.category.name }}</span>
+        <span>阅读量：{{ post.pv }}</span>
+    </div>
+
+    <hr>
+    <div id="post-content">
+        {% autoescape off %}
+        {{ post.content_html }}
+        {% endautoescape %}
+    </div>
+</div>
+
+<hr>
+
+<ul class="list-group">
+    {% for comment in comment_list %}
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="img" tips="头像"></div>
+                <span class="nickname">{{ comment.nickname }}</span>
+            </div>
+
+            <span> {{ comment.created_time }}</span>
+            <img class="thumb-up col-md-offset-6 pull-right" src="/static/image/thumb-up.png">
+        </div>
+        <div class="comment-content">
+            {% autoescape off %}
+            {{ comment.content }}
+            {% endautoescape %}
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+
+<hr>
+<div class="comment">
+    <form>
+        <input class="hidden-info" type="hidden" value="{{ post.id }}"/>
+        {% csrf_token %}
+        <textarea class="form-control" rows="2" cols="60"></textarea>
+        <div class=" has-error has-feedback">
+            <div class="error_tips errors help-block" style="display: none">数据提交失败</div>
+        </div>
+
+        <input class="submit btn-success btn" type="button" value="提交">
+    </form>
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+    var imgMaxHeight = 600;
+    var imgMaxWidth = 658;
+    let imgs = $('#post-content img');
+    // alert(imgs.length);
+    for (var i = 0; i < imgs.length; i++) {
+        let height = parseInt($(imgs[i]).css('height'));
+        let width = parseInt($(imgs[i]).css('width'));
+        if (height >= imgMaxHeight || width >= imgMaxWidth) {
+            let rate = width / height;
+            let new_width = 0;
+            let new_height = 0;
+            if (width >= imgMaxWidth) {
+                new_width = imgMaxWidth;
+                new_height = parseInt(new_width / rate);
+            } else {
+                new_height = imgMaxHeight;
+                new_width = parseInt(rate * new_height);
+            }
+            $(imgs[i]).css('height', new_height + 'px');
+            $(imgs[i]).css('width', new_width + 'px');
+        }
+    }
+
+
+    var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+    var error_tips = $('.error_tips');
+
+    function error_show(msg, showTime = 1600) {
+        error_tips.text(msg);
+        error_tips.attr('style', 'display:block');
+        setTimeout(function () {
+            error_tips.attr('style', 'display:none');
+        }, showTime);
+    }
+
+    var submitComment = function (e) {
+        let content = $('.comment textarea').val();
+        if (content.length < 6) {
+            error_show('评论字数太少了，请重新填写');
+            return null
+        }
+
+        $.ajax({
+            url: '/comment/',
+            type: 'post',
+            data: {
+                'content': content,
+                'post_id': $('.comment .hidden-info').val(),
+                'csrfmiddlewaretoken': csrftoken,
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    window.location.reload();
+                    $('.comment textarea').val('');
+                } else {
+                    error_show(res.msg);
+                }
+            },
+            error: function () {
+                $('.comment .error_tips').attr('display', 'block');
+            }
+        });
+
+    };
+    $('.comment .submit').on('click', submitComment);
+
+</script>
+
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">
+
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+{% endblock %}

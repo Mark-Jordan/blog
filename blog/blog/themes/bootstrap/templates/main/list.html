@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+{% if tag %}
+标签页：{{ tag.name }}
+{% elif category %}
+分类页：{{ category.name }}
+{% endif %}
+{% endblock %}
+
+{% block main %}
+
+
+{% for post in post_list %}
+<div class="card">
+    <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
+    <div>
+        <a class="owner" href="{% url 'author' post.owner.id %}">作者：{{ post.owner.username }}</a>
+        <span class="category">分类：{{ post.category.name }}</span>
+    </div>
+</div>
+{% endfor %}
+
+<div class="pagintor">
+    {% if page_obj %}
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">下一页</a>
+    {% endif %}
+    {% endif %}
+</div>
+
+
+{% endblock %}
+

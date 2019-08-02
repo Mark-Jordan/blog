@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} 首页 {% endblock %}-博客系统</title>
+    <link href="/static/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/jquery-3.3.1.min.js" rel="script"></script>
+    <style>
+        .card {
+            border: 1px solid rgba(60, 60, 60, 0.36);
+            margin-top: 18px;
+            border-radius: 5px;
+            padding: 18px 18px;
+        }
+
+        .footer-nav > a {
+            padding-top: 30px;
+        }
+
+        /*-----list-----*/
+        .pagintor {
+            margin: 20px 20px;
+            text-align: center;
+        }
+
+        .category {
+            margin-left: 20px;
+        }
+
+        /*--------detail----------*/
+        .p {
+            text-indent: 20px;
+        }
+
+        .thumb-up {
+            width: 15px;
+            height: 15px;
+        }
+
+        .comment-content {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!--<div class="container">-->
+<div class="container head">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">首页</a>
+            </div>
+
+            <ul class="nav navbar-nav">
+                {% for cate in navs %}
+                <li><a href="#">{{ cate.name }}</a></li>
+                {% endfor%}
+            </ul>
+
+            <div class="form float-right">
+                <form class="navbar-form navbar-right" method="get" action="/search/">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="keyword" placeholder="Search"
+                               value="{{ keyword }}">
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </form>
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="jumbotron">
+        <div class="container">
+            <h2>伊人博客</h2>
+            <h4 style="margin-top: 20px;">留住你的青春...</h4>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="body container">
+    <div class="row">
+        <div class="main col-md-9">
+            {% block main %}
+            {% endblock %}
+        </div>
+
+        <div class="sidebar col-md-3">
+            <!--侧栏：-->
+            {% for sidebar in sidebars %}
+            {% if sidebar.title %}<h4>{{ sidebar.title }}</h4>{% endif %}
+            {{ sidebar.content_html }}
+            {% endfor %}
+            <!--<div class="card">-->
+                <!--<div class="title">-->
+                    <!--python-->
+                <!--</div>-->
+                <!--<div class="content">-->
+                    <!--python有趣,好玩,xxxxx-->
+                    <!--xx-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="card">-->
+                <!--<div class="title">-->
+                    <!--C++-->
+                <!--</div>-->
+                <!--<div class="content">-->
+                    <!--学这玩意儿，难死了-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<div class="footer container">
+    <div class="navbar navbar-default">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                {% for cate in categories %}
+                <li class="footer-nav"><a href="{% url 'category_list' cate.id %}">{{ cate.name }}</a></li>
+                {% if not forloop.last %}
+                <li class="footer-nav"><a>></a></li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+{% endblock %}
+
+</body>
+</html>
